@@ -15,17 +15,17 @@ def conversion(path: str):
 	conversion_currency, conversion_amount = convert_to_rub(amount, rate)
 	return {
 		'given_currency': currency, 'given_amount': amount,
-		'conversion_currency': conversion_currency, 'conversion_amount': f'{conversion_amount:.2f}'
+		'conversion_currency': conversion_currency, 'conversion_amount': conversion_amount
 	}
 
 
 def convert_to_rub(amount: float, rate: float) -> Tuple[str, float]:
 	if amount < 0:
 		raise ValueError('Amount below zero')
-	res_currency = 'RUB'
-	result = amount*rate
+	conversion_currency = 'RUB'
+	conversion_amount = amount*rate
 	logger.debug(
-		f'{amount = } with {rate = } {result = :.2f} in {res_currency}',
+		f'{amount = } with {rate = } {conversion_amount = :.2f} in {conversion_currency}',
 		extra={'client': ''}
 	)
-	return res_currency, result
+	return conversion_currency, conversion_amount
