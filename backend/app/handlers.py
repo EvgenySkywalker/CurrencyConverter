@@ -3,8 +3,8 @@ from http import HTTPStatus
 from urllib.error import URLError
 from http.server import BaseHTTPRequestHandler
 
-from app.log.core import logger
-from app.converting.converter import conversion
+from log.core import logger
+from converting.converter import conversion
 
 
 class HandleRequests(BaseHTTPRequestHandler):
@@ -22,7 +22,7 @@ class HandleRequests(BaseHTTPRequestHandler):
 					json.dumps(result).encode('UTF-8')
 				)
 				logger.info(
-					f"GET RESPONSE {result['conversion_currency'] = }, {result['conversion_amount'] = :.2f}",
+					f"GET RESPONSE {result['conversion_currency'] = }, {result['conversion_amount'] = }",
 					extra={'client': self.client_address[0]}
 				)
 			except URLError as e:

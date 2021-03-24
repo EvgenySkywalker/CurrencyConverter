@@ -1,7 +1,5 @@
 import pytest
 
-from mock import patch
-
 from app.rate_parsing.parsers import parse_rate
 
 

@@ -1,8 +1,6 @@
 from io import BytesIO as IO
-from urllib.error import URLError
 
 import pytest
-from mock import patch
 
 from app.handlers import HandleRequests
 
