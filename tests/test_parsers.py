@@ -1,6 +1,6 @@
 import pytest
 
-from rate_parsing.parsers import parse_rate
+from app.rate_parsing.parsers import parse_rate
 
 
 @pytest.mark.parametrize(
@@ -9,7 +9,7 @@ from rate_parsing.parsers import parse_rate
 		('-1', ValueError),
 	]
 )
-def test_get_rate_exception(currency, expected):
+def test_parse_rate_exception(currency, expected):
 	with pytest.raises(expected):
 		parse_rate(currency)
 
@@ -19,5 +19,5 @@ def test_get_rate_exception(currency, expected):
 		('USD', float),
 	]
 )
-def test_get_rate_type(currency, expected):
+def test_parse_rate_type(currency, expected):
 	assert type(parse_rate(currency)) is expected

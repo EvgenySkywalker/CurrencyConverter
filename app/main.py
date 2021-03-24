@@ -13,6 +13,20 @@ HOST = '127.0.0.1'
 PORT = 9000
 
 
+def conversion(path: str):
+	query_components = parse_qs(urlparse(path).query)
+	currency = str(query_components['currency'][0])
+	if not query_components['amount'][0].isdigit():
+		raise ValueError('Amount must be float')
+	amount = float(query_components['amount'][0])
+	rate = parse_rate(currency)
+	conversion_currency, conversion_amount = convert_to_rub(amount, rate)
+	return {
+		'given_currency': currency, 'given_amount': amount,
+		'conversion_currency': conversion_currency, 'conversion_amount': f'{conversion_amount:.2f}'
+	}
+
+
 class HandleRequests(BaseHTTPRequestHandler):
 	def _set_headers(self, code):
 		self.send_response(code)
@@ -22,22 +36,13 @@ class HandleRequests(BaseHTTPRequestHandler):
 	def do_GET(self):
 		try:
 			try:
-				query_components = parse_qs(urlparse(self.path).query)
-				currency = str(query_components['currency'][0])
-				if not query_components['amount'][0].isdigit():
-					raise ValueError('Amount must be float')
-				amount = float(query_components['amount'][0])
-				rate = parse_rate(currency)
-				conversion_currency, conversion_amount = convert_to_rub(amount, rate)
+				result = conversion(self.path)
 				self._set_headers(HTTPStatus.OK)
 				self.wfile.write(
-					json.dumps({
-						'given_currency': currency, 'given_amount': amount,
-						'conversion_currency': conversion_currency, 'conversion_amount': f'{conversion_amount:.2f}'
-					}).encode('UTF-8')
+					json.dumps(result).encode('UTF-8')
 				)
 				logger.info(
-					f'GET RESPONSE {conversion_currency = }, {conversion_amount = :.2f}',
+					f"GET RESPONSE {result['conversion_currency'] = }, {result['conversion_amount'] = :.2f}",
 					extra={'client': self.client_address[0]}
 				)
 			except URLError as e:
@@ -62,3 +67,4 @@ logger.info(
 	f'Http Server Serving at {HOST}:{PORT}',
 	extra={'client': ''}
 )
+HTTPServer((HOST, PORT), HandleRequests).serve_forever()

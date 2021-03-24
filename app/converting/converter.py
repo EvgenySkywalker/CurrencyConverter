@@ -1,6 +1,6 @@
 from typing import Tuple
 
-from log.core import logger
+from app.log.core import logger
 
 
 def convert_to_rub(amount: float, rate: float) -> Tuple[str, float]:

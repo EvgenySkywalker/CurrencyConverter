@@ -1,28 +1,20 @@
 import json
-from http.server import HTTPServer
-from urllib.request import urlopen
 
 import pytest
+from mock import patch
 
-from main import HandleRequests
-
-HOST = '127.0.0.1'
-PORT = 9000
+from app.main import conversion
 
 
-@pytest.fixture(scope='module')
-def server():
-	with HTTPServer((HOST, PORT), HandleRequests) as server:
-		yield server
-
-
-def test_get(server, mocker):
-	mocker.patch('main.parse_rate', return_value=0)
-	response = json.loads(urlopen(f'http://{HOST}:{PORT}/?currency=USD&amount=32').read())
-	print(response)
-	assert response['conversion_amount'] == 0
-
-
-
-
-
+@pytest.mark.parametrize(
+	('currency', 'amount', 'expected'), [
+		('EUR', 0, 0),
+		('USD', 1, 1),
+	]
+)
+@patch('main.parse_rate')
+def test_conversion(parse_rate, currency, amount, expected):
+	parse_rate.return_value = 1
+	path = f'/?currency={currency}&amount={str(amount)}'
+	result = json.loads(conversion(path))
+	assert result['conversion_amount'] == expected

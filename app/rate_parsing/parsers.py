@@ -2,7 +2,7 @@ import re
 from urllib.error import HTTPError, URLError
 from urllib.request import urlopen
 
-from log.core import logger
+from app.log.core import logger
 
 URL = 'https://plus.yandex.ru/invest/catalog/currency/'
 
